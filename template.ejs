@@ -1,0 +1,28 @@
+(() => {
+    const __webpack_modules__ = [
+        <% data.forEach(info => { %>
+            [(module, exports, require) => {
+                <%- info.code %>
+            }, <%- JSON.stringify(info.mapping) %>],
+        <% }) %>
+    ]
+    const cacheModules = {}
+
+    const __webpack_require__ = (chunkId) => {
+        
+        const chunkModule = cacheModules[chunkId]
+        if (chunkModule) {
+            return chunkModule
+        }
+        const [fn, mapping] = __webpack_modules__[chunkId]
+        const localRequire = (filePath) => {
+            const id = mapping[filePath]
+            return __webpack_require__(id)
+        }
+        const __webpack_exports__ = {}
+        fn(__webpack_modules__, __webpack_exports__, localRequire)
+        return __webpack_exports__
+    }
+
+    __webpack_require__(0)
+})()
